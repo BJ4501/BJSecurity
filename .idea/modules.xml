@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BJSecurity.iml" filepath="$PROJECT_DIR$/BJSecurity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bj-security/bj-security.iml" filepath="$PROJECT_DIR$/bj-security/bj-security.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bj-security-app/bj-security-app.iml" filepath="$PROJECT_DIR$/bj-security-app/bj-security-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bj-security-browser/bj-security-browser.iml" filepath="$PROJECT_DIR$/bj-security-browser/bj-security-browser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bj-security-core/bj-security-core.iml" filepath="$PROJECT_DIR$/bj-security-core/bj-security-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bj-security-demo/bj-security-demo.iml" filepath="$PROJECT_DIR$/bj-security-demo/bj-security-demo.iml" />
+    </modules>
+  </component>
+</project>
