@@ -8,10 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Date;
 
 /**
  * Created by BJ on 2018/3/2.
@@ -36,18 +39,51 @@ public class UserControllerTest {
     public void whenQuerySuccess() throws Exception {
         //mockMvc发送模拟请求，判断返回内容是否符合期望
         //例：构建Get请求
-        mockMvc.perform(MockMvcRequestBuilders.get("/user")
-                .param("username","neko")
+        String result = mockMvc.perform(MockMvcRequestBuilders.get("/user")
+                .param("username", "neko")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 //对上面请求结果的期望
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 //解析返回的Json的内容(本次判断是需要返回的是一个集合，长度为3)
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3));
+                //JsonPath: github.com/json-path/JsonPath
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
+                .andReturn().getResponse().getContentAsString();
 
-        //JsonPath: github.com/json-path/JsonPath
-        //
-        //
+        System.out.println(result);
+    }
 
+    //当获取信息正常
+    @Test
+    public void whenGetInfoSuccess() throws Exception {
+        String result = mockMvc.perform(MockMvcRequestBuilders.get("/user/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("tom"))
+                .andReturn().getResponse().getContentAsString();
+
+        System.out.println(result);
+    }
+
+    //当获取信息失败
+    @Test
+    public void whenGetInfoFail() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/a")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @Test
+    public void whenCreateSuccess() throws Exception {
+        Date date = new Date();
+        String content = "{\"username\":\"tom\",\"password\":null,\"birthday\":"+date.getTime()+"}";
+        String result = mockMvc.perform(MockMvcRequestBuilders.post("/user")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andReturn().getResponse().getContentAsString();
+
+        System.out.println(result);
     }
 
 }
