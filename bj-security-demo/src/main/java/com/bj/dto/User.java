@@ -1,8 +1,10 @@
 package com.bj.dto;
 
+import com.bj.validator.MyConstraint;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.Past;
 import java.util.Date;
 
 /**
@@ -16,11 +18,13 @@ public class User {
 
     private String id;
 
+    @MyConstraint(message = "Test Constraint")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "密码不可为空")
     private String password;
 
+    @Past(message = "生日不真实")
     private Date birthday;
 
     @JsonView(UserSimpleView.class)

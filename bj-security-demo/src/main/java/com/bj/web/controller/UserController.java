@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * Created by BJ on 2018/3/2.
  */
+@SuppressWarnings("Duplicates")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -32,6 +34,30 @@ public class UserController {
         System.out.println(user.getId());
         user.setId("1");
         return user;
+    }
+
+    @PutMapping("/{id:\\d+}")
+    public User update(@Valid @RequestBody User user, BindingResult errors){
+        //如果存在错误，捕获错误
+        if (errors.hasErrors()){
+            errors.getAllErrors().stream().forEach(error -> {
+                FieldError fieldError = (FieldError) error;
+                String msg = fieldError.getField()+ " : " + error.getDefaultMessage();
+                System.out.println(msg);
+            });
+        }
+
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        System.out.println(user.getId());
+        user.setId("1");
+
+        return user;
+    }
+
+    @DeleteMapping("/{id:\\d+}")
+    public void delete(@PathVariable String id){
+        System.out.println(id);
     }
 
     //@RequestMapping(value = "/user", method = RequestMethod.GET)

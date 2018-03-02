@@ -38,6 +38,29 @@
     - 场景：传入参数的空判断，优化代码结构，不需要每次都进行判断，使用注解简化
     - 注：使用前需要在传入对象前加@Valid
 
+### 常用的验证注解 (Hibernate Validator)
+- @NotNull 值不能为空
+- @Null 值必须为空
+- @Pattern(regex=) 字符串必须匹配正则表达式
+- @Size(min=,max=) 集合的元素数量必须在min，max之间
+- @CreditCardNumber(ignoreNonDigitCharacters=) 字符串必须是信用卡号(美国标准)
+- @Email 字符串必须是Email地址
+- @Length(min=,max=) 检查字符串的长度
+- @NotBlank 字符串必须有字符
+- @NotEmpty 字符串不为null，集合有元素
+- @Range(min=,max=) 数字必须大于等于min，小于等于max
+- @SafeHtml 字符串是安全的Html
+- @URL 字符串是合法的URL
+- @AssertFalse 值必须是false
+- @AssertTrue 值必须是True
+- @DecimalMax(value=,inclusive=) 值必须小于等于(inclusive=true)/小于(inclusive=false)value属性指定的值。可以注解在字符串类型的属性上。
+- @DecimalMin(value=,inclusive=) 值必须大于等于(inclusive=true)/大于(inclusive=false)value属性指定的值。可以注解在字符串类型的属性上。
+- @Digits(integer=,fraction=) 数字格式检查。integer指定整数部分的最大长度，fraction指定小数部分的最大长度。
+- @Future 值必须是未来的日期
+- @Past 值必须是过去的日期
+- @Max(value=) 值必须小于等于value指定的值。不能注解在字符串类型的属性上。
+- @Min(value=) 值必须大于等于value指定的值。不能注解在字符串类型的属性上。
+- 补充：以上所有注解都有一个共用的参数 message= 用来填写出错时的错误信息。
 
 #### 补充
 - 通过反射对象打印toString
