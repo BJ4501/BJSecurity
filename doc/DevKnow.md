@@ -37,6 +37,9 @@
     - @NotBlank
     - 场景：传入参数的空判断，优化代码结构，不需要每次都进行判断，使用注解简化
     - 注：使用前需要在传入对象前加@Valid
+- @ControllerAdvice 
+    - 该注解作用是处理其他Controller抛出的异常
+    - @ExceptionHandler(class)
 
 ### 常用的验证注解 (Hibernate Validator)
 - @NotNull 值不能为空
@@ -76,3 +79,6 @@ ReflectionToStringBuilder.toString(obj, ToStringStyle.MULTI_LINE_STYLE);
     StringUtils.isBlank(obj);
     ...
 ```
+- 错误码信息页实现
+> 在resources目录下，创建resources/error两级目录，在里面创建对应错误码的html，
+当出现需要该错误码的页面时，就会读取该页面

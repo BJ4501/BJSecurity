@@ -1,6 +1,7 @@
 package com.bj.web.controller;
 
 import com.bj.dto.User;
+import com.bj.exception.UserNotExistException;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -82,9 +83,10 @@ public class UserController {
     @GetMapping("/{id:\\d+}")
     @JsonView(User.UserDetailView.class)
     public User getInfo(@PathVariable String id) {
-        User user = new User();
+        throw new UserNotExistException(id);
+        /*User user = new User();
         user.setUsername("tom");
-        return user;
+        return user;*/
     }
 
 
