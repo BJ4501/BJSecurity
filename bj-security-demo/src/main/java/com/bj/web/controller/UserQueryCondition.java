@@ -1,5 +1,7 @@
 package com.bj.web.controller;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Query方法的参数组装
  * Created by neko on 2018/3/2.
@@ -8,6 +10,7 @@ public class UserQueryCondition {
 
     private String username;
 
+    @ApiModelProperty(value = "年龄")
     private int age;
 
     private int ageTo;

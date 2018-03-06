@@ -3,6 +3,8 @@ package com.bj.web.controller;
 import com.bj.dto.User;
 import com.bj.exception.UserNotExistException;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
@@ -64,6 +66,7 @@ public class UserController {
     //@RequestMapping(value = "/user", method = RequestMethod.GET)
     @GetMapping
     @JsonView(User.UserSimpleView.class)
+    @ApiOperation(value = "用户查询服务")
     //public List<User> query(UserQueryCondition uqc){
     public List<User> query(@RequestParam String username,@PageableDefault Pageable pageable){
         //补充：通过反射对象打印toString
@@ -82,7 +85,7 @@ public class UserController {
     //@RequestMapping(value = "/user/{id:\\d+}",method = RequestMethod.GET)
     @GetMapping("/{id:\\d+}")
     @JsonView(User.UserDetailView.class)
-    public User getInfo(@PathVariable String id) {
+    public User getInfo(@ApiParam("用户id") @PathVariable String id) {
         //throw new UserNotExistException(id);
         System.out.println("getInfo IN");
         User user = new User();
