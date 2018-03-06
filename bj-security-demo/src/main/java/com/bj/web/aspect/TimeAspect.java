@@ -10,8 +10,8 @@ import java.util.Date;
 /**
  * Created by neko on 2018/3/5.
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class TimeAspect {
 
     @Around("execution(* com.bj.web.controller.UserController.*(..))")
