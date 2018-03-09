@@ -1,5 +1,6 @@
 package com.bj.security.browser.authentication;
 
+import com.bj.security.browser.support.SimpleResponse;
 import com.bj.security.core.properties.LoginType;
 import com.bj.security.core.properties.SecurityProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +43,7 @@ public class BJSAuthenticationFailureHandler extends SimpleUrlAuthenticationFail
             httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             httpServletResponse.setContentType("application/json;charset=UTF-8");
             //将authentication转换为一个字符串
-            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(e));
+            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(e.getMessage())));
         }else {
             super.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
         }

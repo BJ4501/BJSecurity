@@ -1,6 +1,7 @@
 package com.bj.security.browser;
 
 import com.bj.security.core.properties.SecurityProperties;
+import com.bj.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Web 应用安全适配器
@@ -36,8 +38,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        //自定义图片验证码过滤器
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+        validateCodeFilter.setAuthenticationFailureHandler(bjsAuthenticationFailureHandler);
+
         //定义一个最简单的安全环境
-        http.formLogin() //表单登录  httpBasic()基本Basic登录
+        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin() //表单登录  httpBasic()基本Basic登录
                 .loginPage("/authentication/require") //自定义登录页面
                 .loginProcessingUrl("/authentication/form") //将表单登录拦截器的默认地址改为这个
                 .successHandler(bjsAuthenticationSuccessHandler) //表单登录成功后，会使用这个成功处理器
@@ -45,7 +52,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() //请求授权
                 .antMatchers("/authentication/require",
-                        secutiryProperties.getBrowser().getLoginPage()).permitAll() //匹配器，记录额外不需要认证的页面
+                        secutiryProperties.getBrowser().getLoginPage(),
+                        "/code/image").permitAll() //匹配器，记录额外不需要认证的页面
                 .anyRequest() //任何请求
                 .authenticated() //都需要身份验证
                 .and()
