@@ -41,6 +41,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         //自定义图片验证码过滤器
         ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
         validateCodeFilter.setAuthenticationFailureHandler(bjsAuthenticationFailureHandler);
+        validateCodeFilter.setSecurityProperties(secutiryProperties);
+        validateCodeFilter.afterPropertiesSet();
 
         //定义一个最简单的安全环境
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
