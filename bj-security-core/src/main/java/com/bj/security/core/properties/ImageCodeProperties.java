@@ -3,17 +3,15 @@ package com.bj.security.core.properties;
 /**
  * Created by neko on 2018/3/12.
  */
-public class ImageCodeProperties {
+public class ImageCodeProperties extends SmsCodeProperties {
 
     private int width = 67;
 
     private int height = 23;
 
-    private int length = 4; //长度
-
-    private int expireIn = 60; //失效时间
-
-    private String url = "";
+    public ImageCodeProperties(){
+        setLength(4);
+    }
 
     public int getWidth() {
         return width;
@@ -31,27 +29,4 @@ public class ImageCodeProperties {
         this.height = height;
     }
 
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    public int getExpireIn() {
-        return expireIn;
-    }
-
-    public void setExpireIn(int expireIn) {
-        this.expireIn = expireIn;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

@@ -6,6 +6,7 @@
 </head>
 <body>
     <h2>Login Page</h2>
+    <h3>Form Login Mode</h3>
     <form action="/authentication/form" method="post">
         <table>
             <tr>
@@ -25,6 +26,26 @@
             </tr>
             <tr>
                 <td colspan="2"><input name="remember-me" type="checkbox" value="true"/>RememberMe</td>
+            </tr>
+            <tr>
+                <td colspan="2"><button type="submit">Login</button></td>
+            </tr>
+        </table>
+    </form>
+
+    <h3>Form Login Mode</h3>
+    <form action="/authentication/mobile" method="post">
+        <table>
+            <tr>
+                <td>PhoneNo:</td>
+                <td><input type="text" name="mobile" value="13012345678"></td>
+            </tr>
+            <tr>
+                <td>SmsCode:</td>
+                <td>
+                    <input type="text" name="smsCode">
+                    <a href="/code/sms?mobile=13012345678">Send a Sms</a>
+                </td>
             </tr>
             <tr>
                 <td colspan="2"><button type="submit">Login</button></td>
