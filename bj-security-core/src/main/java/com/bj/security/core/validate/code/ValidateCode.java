@@ -1,6 +1,5 @@
 package com.bj.security.core.validate.code;
 
-import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 
 /**

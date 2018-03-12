@@ -56,7 +56,7 @@ public class ValidateCodeController {
     @GetMapping("/code/sms")
     public void createSmsCode(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletRequestBindingException {
 
-        ValidateCode smsCode = imageCodeGenerator.generate(new ServletWebRequest(request));
+        ValidateCode smsCode = smsCodeGenerator.generate(new ServletWebRequest(request));
         //操作添加到session中
         sessionStrategy.setAttribute(new ServletWebRequest(request),SESSION_KEY,smsCode);
         String mobile = ServletRequestUtils.getRequiredStringParameter(request,"mobile");

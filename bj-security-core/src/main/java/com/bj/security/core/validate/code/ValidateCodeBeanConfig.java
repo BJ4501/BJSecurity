@@ -27,10 +27,9 @@ public class ValidateCodeBeanConfig {
     }
 
     @Bean
-    //当Spring容器启动时，会去先寻找名为：imageCodeGenerator的Bean，如果没有，则执行该方法的逻辑
     //@ConditionalOnMissingBean(name = "smsCodeGenerator")
     @ConditionalOnMissingBean(SmsCodeSender.class)
-    public SmsCodeSender smsCodeGenerator(){
+    public SmsCodeSender smsCodeSender(){
         return new DefaultSmsCodeSender();
     }
 
