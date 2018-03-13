@@ -1,6 +1,8 @@
 package com.bj.security.browser;
 
+import com.bj.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.bj.security.core.properties.SecurityProperties;
+import com.bj.security.core.validate.code.SmsCodeFilter;
 import com.bj.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +42,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         //这里可以配置成需要的密码加密工具，只要继承PasswordEncoder并实现即可
@@ -65,8 +70,15 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         validateCodeFilter.setSecurityProperties(secutiryProperties);
         validateCodeFilter.afterPropertiesSet();
 
+        //自定义Sms过滤器
+        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+        smsCodeFilter.setAuthenticationFailureHandler(bjsAuthenticationFailureHandler);
+        smsCodeFilter.setSecurityProperties(secutiryProperties);
+        smsCodeFilter.afterPropertiesSet();
+
         //定义一个最简单的安全环境
-        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin() //表单登录  httpBasic()基本Basic登录
                     .loginPage("/authentication/require") //自定义登录页面
                     .loginProcessingUrl("/authentication/form") //将表单登录拦截器的默认地址改为这个
@@ -85,7 +97,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest() //任何请求
                 .authenticated() //都需要身份验证
                 .and()
-                .csrf().disable(); //CSRF跨站请求防护功能关闭
+                .csrf().disable() //CSRF跨站请求防护功能关闭
+                .apply(smsCodeAuthenticationSecurityConfig); //加入配置
     }
 
 }
