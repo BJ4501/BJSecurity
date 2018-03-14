@@ -36,6 +36,16 @@ public class QQUserInfo {
     private String level;
     private String is_yellow_year_vip;
 
+    private String openId;
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
     public int getRet() {
         return ret;
     }
