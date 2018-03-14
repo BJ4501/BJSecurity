@@ -46,6 +46,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         urls.add("/authentication/form");
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
