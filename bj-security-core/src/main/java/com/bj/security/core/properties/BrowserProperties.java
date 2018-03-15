@@ -5,6 +5,8 @@ package com.bj.security.core.properties;
  */
 public class BrowserProperties {
 
+    private String signUpUrl = "/bj-signUp.html";
+
     private String loginPage = "/bj-signIn.html";
 
     private LoginType loginType = LoginType.JSON;
@@ -33,5 +35,13 @@ public class BrowserProperties {
 
     public void setRememberMeSeconds(int rememberMeSeconds) {
         this.rememberMeSeconds = rememberMeSeconds;
+    }
+
+    public String getSignUpUrl() {
+        return signUpUrl;
+    }
+
+    public void setSignUpUrl(String signUpUrl) {
+        this.signUpUrl = signUpUrl;
     }
 }
