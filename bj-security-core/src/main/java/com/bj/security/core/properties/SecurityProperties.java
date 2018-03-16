@@ -37,4 +37,5 @@ public class SecurityProperties {
     public void setSocial(SocialProperties social) {
         this.social = social;
     }
+
 }

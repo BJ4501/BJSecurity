@@ -1,5 +1,7 @@
 package com.bj.security.browser;
 
+import com.bj.security.browser.session.BjsExpiredSessionStrategy;
+import com.bj.security.browser.session.BjsInvalidSessionStrategy;
 import com.bj.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.bj.security.core.properties.SecurityProperties;
 import com.bj.security.core.validate.code.SmsCodeFilter;
@@ -17,6 +19,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
@@ -48,6 +52,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SpringSocialConfigurer bjsSocialSecurityConfig;
+
+    @Autowired
+    private SessionInformationExpiredStrategy BjsSessionInformationExpiredStrategy;
+
+    @Autowired
+    private InvalidSessionStrategy BjsInvalidSessionStrategy;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -94,12 +104,19 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                     .tokenValiditySeconds(secutiryProperties.getBrowser().getRememberMeSeconds()) //token有效时间
                     .userDetailsService(userDetailsService)
                 .and()
+                .sessionManagement()
+                    .invalidSessionStrategy(BjsInvalidSessionStrategy)//当session失效时跳转的地址
+                    .maximumSessions(secutiryProperties.getBrowser().getSession().getMaximumSessions())//最大session数量
+                    .maxSessionsPreventsLogin(secutiryProperties.getBrowser().getSession().isMaxSessionsPreventsLogin()) //当session数量达到最大数量时，阻止后序登录行为(同用户登录
+                    .expiredSessionStrategy(BjsSessionInformationExpiredStrategy) //记录session
+                    .and()
+                    .and()
                 .authorizeRequests() //请求授权
                 .antMatchers("/authentication/require",
                         secutiryProperties.getBrowser().getLoginPage(),
                         "/code/*",
                         secutiryProperties.getBrowser().getSignUpUrl(),
-                        "/user/regist")
+                        "/user/regist","/session/invalid")
                 .permitAll() //匹配器，记录额外不需要认证的页面
                 .anyRequest() //任何请求
                 .authenticated() //都需要身份验证

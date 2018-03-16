@@ -80,4 +80,12 @@ public class BrowserSecurityController {
         return userInfo;
     }
 
+    //当Session失效
+    @GetMapping("/session/invalid")
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED) //返回状态码401未授权
+    public SimpleResponse sessionInvalid(){
+        String message = "session失效";
+        return new SimpleResponse(message);
+    }
+
 }

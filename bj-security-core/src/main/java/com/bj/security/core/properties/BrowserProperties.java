@@ -13,6 +13,8 @@ public class BrowserProperties {
 
     private int rememberMeSeconds = 36000;
 
+    private SessionProperties session = new SessionProperties();
+
     public String getLoginPage() {
         return loginPage;
     }
@@ -43,5 +45,13 @@ public class BrowserProperties {
 
     public void setSignUpUrl(String signUpUrl) {
         this.signUpUrl = signUpUrl;
+    }
+
+    public SessionProperties getSession() {
+        return session;
+    }
+
+    public void setSession(SessionProperties session) {
+        this.session = session;
     }
 }
