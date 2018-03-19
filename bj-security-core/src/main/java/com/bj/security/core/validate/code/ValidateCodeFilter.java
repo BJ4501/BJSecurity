@@ -3,9 +3,11 @@ package com.bj.security.core.validate.code;
 import com.bj.security.core.properties.SecurityProperties;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -22,17 +24,20 @@ import java.util.Set;
 /**
  * Created by neko on 2018/3/9.
  */
+@Component("validateCodeFilter")
 public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean{
 
     //OncePerRequestFilter 保证过滤器每次只会被调用一次
 
     //自定义的身份验证失败处理器
+    @Autowired
     private AuthenticationFailureHandler authenticationFailureHandler;
 
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
     private Set<String> urls = new HashSet<>(); //implements InitializingBean
 
+    @Autowired
     private SecurityProperties securityProperties;
 
     private AntPathMatcher pathMatcher = new AntPathMatcher();

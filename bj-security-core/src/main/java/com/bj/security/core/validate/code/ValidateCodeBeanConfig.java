@@ -1,6 +1,7 @@
 package com.bj.security.core.validate.code;
 
 import com.bj.security.core.properties.SecurityProperties;
+import com.bj.security.core.validate.code.image.ImageCodeGenerator;
 import com.bj.security.core.validate.code.sms.DefaultSmsCodeSender;
 import com.bj.security.core.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;

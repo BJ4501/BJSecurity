@@ -1,6 +1,7 @@
-package com.bj.security.core.validate.code;
+package com.bj.security.core.validate.code.sms;
 
 import com.bj.security.core.properties.SecurityProperties;
+import com.bj.security.core.validate.code.ValidateCodeException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -22,6 +23,7 @@ import java.util.Set;
 /**
  * Created by neko on 2018/3/9.
  */
+@Deprecated
 public class SmsCodeFilter extends OncePerRequestFilter implements InitializingBean{
 
     //OncePerRequestFilter 保证过滤器每次只会被调用一次

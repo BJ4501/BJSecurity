@@ -1,10 +1,11 @@
 package com.bj.security.browser;
 
-import com.bj.security.browser.session.BjsExpiredSessionStrategy;
-import com.bj.security.browser.session.BjsInvalidSessionStrategy;
+import com.bj.security.core.authentication.AbstractChannelSecurityConfig;
 import com.bj.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.bj.security.core.properties.SecurityConstants;
 import com.bj.security.core.properties.SecurityProperties;
-import com.bj.security.core.validate.code.SmsCodeFilter;
+import com.bj.security.core.validate.code.ValidateCodeSecurityConfig;
+import com.bj.security.core.validate.code.sms.SmsCodeFilter;
 import com.bj.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,10 +31,10 @@ import javax.sql.DataSource;
  * Created by neko on 2018/3/7.
  */
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
-    private SecurityProperties secutiryProperties;
+    private SecurityProperties securityProperties;
 
     @Autowired
     private AuthenticationSuccessHandler bjsAuthenticationSuccessHandler;
@@ -49,6 +50,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
+    @Autowired
+    ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
     @Autowired
     private SpringSocialConfigurer bjsSocialSecurityConfig;
@@ -78,6 +82,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+/*
         //自定义图片验证码过滤器
         ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
         validateCodeFilter.setAuthenticationFailureHandler(bjsAuthenticationFailureHandler);
@@ -125,6 +130,42 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .apply(smsCodeAuthenticationSecurityConfig) //加入配置
                 .and()
                 .apply(bjsSocialSecurityConfig);
+*/
+
+        applyPasswordAuthenticationConfig(http);
+
+        http.apply(validateCodeSecurityConfig)
+                .and()
+                .apply(smsCodeAuthenticationSecurityConfig)
+                .and()
+                .apply(bjsSocialSecurityConfig)
+                .and()
+                .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+                .userDetailsService(userDetailsService)
+                .and()
+                .sessionManagement()
+                .invalidSessionStrategy(BjsInvalidSessionStrategy)
+                .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+                .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
+                .expiredSessionStrategy(BjsSessionInformationExpiredStrategy)
+                .and()
+                .and()
+                .authorizeRequests()
+                .antMatchers(
+                        SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+                        securityProperties.getBrowser().getLoginPage(),
+                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*",
+                        securityProperties.getBrowser().getSignUpUrl(),
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl(),
+                        "/user/regist")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .csrf().disable();
     }
 
 }
