@@ -4,6 +4,7 @@ import com.bj.security.core.properties.SecurityProperties;
 import com.bj.security.core.validate.code.ValidateCodeGenerator;
 import com.bj.security.core.validate.code.image.ImageCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -14,6 +15,7 @@ import java.util.Random;
 /**
  * Created by neko on 2018/3/12.
  */
+@Component("imageValidateCodeGenerator")
 public class ImageCodeGenerator implements ValidateCodeGenerator {
 
     @Autowired

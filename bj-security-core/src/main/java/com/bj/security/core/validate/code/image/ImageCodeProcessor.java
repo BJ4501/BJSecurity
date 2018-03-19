@@ -1,6 +1,9 @@
 package com.bj.security.core.validate.code.image;
 
+import com.bj.security.core.validate.code.ValidateCodeGenerator;
+import com.bj.security.core.validate.code.ValidateCodeProcessor;
 import com.bj.security.core.validate.code.impl.AbstractValidateCodeProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 

@@ -1,6 +1,5 @@
 package com.bj.security.core.validate.code.impl;
 
-import com.bj.security.core.properties.ValidateCodeProperties;
 import com.bj.security.core.validate.code.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

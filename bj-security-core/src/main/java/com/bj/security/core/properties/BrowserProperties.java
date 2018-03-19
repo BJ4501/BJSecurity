@@ -7,6 +7,8 @@ public class BrowserProperties {
 
     private String signUpUrl = "/bj-signUp.html";
 
+    private String signOutUrl = "";
+
     private String loginPage = "/bj-signIn.html";
 
     private LoginType loginType = LoginType.JSON;
@@ -45,6 +47,14 @@ public class BrowserProperties {
 
     public void setSignUpUrl(String signUpUrl) {
         this.signUpUrl = signUpUrl;
+    }
+
+    public String getSignOutUrl() {
+        return signOutUrl;
+    }
+
+    public void setSignOutUrl(String signOutUrl) {
+        this.signOutUrl = signOutUrl;
     }
 
     public SessionProperties getSession() {

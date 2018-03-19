@@ -5,19 +5,16 @@ import com.bj.security.core.authentication.mobile.SmsCodeAuthenticationSecurityC
 import com.bj.security.core.properties.SecurityConstants;
 import com.bj.security.core.properties.SecurityProperties;
 import com.bj.security.core.validate.code.ValidateCodeSecurityConfig;
-import com.bj.security.core.validate.code.sms.SmsCodeFilter;
-import com.bj.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -56,6 +53,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private SpringSocialConfigurer bjsSocialSecurityConfig;
+
+    @Autowired
+    private LogoutSuccessHandler BjsLogoutSuccessHandler;
 
     @Autowired
     private SessionInformationExpiredStrategy BjsSessionInformationExpiredStrategy;
@@ -152,6 +152,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .expiredSessionStrategy(BjsSessionInformationExpiredStrategy)
                 .and()
                 .and()
+                .logout()
+                    //.logoutUrl("/logout") //配置退出URL
+                    .logoutSuccessHandler(BjsLogoutSuccessHandler) //与logoutUrl互斥，只能写一个
+                    .logoutSuccessUrl("/bj-logout.html") //退出成功后重定向地址
+                    .deleteCookies("JSESSIONID") //清除cookies
+                .and()
                 .authorizeRequests()
                 .antMatchers(
                         SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
@@ -160,6 +166,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                         SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*",
                         securityProperties.getBrowser().getSignUpUrl(),
                         securityProperties.getBrowser().getSession().getSessionInvalidUrl(),
+                        securityProperties.getBrowser().getSignOutUrl(),
                         "/user/regist")
                 .permitAll()
                 .anyRequest()
