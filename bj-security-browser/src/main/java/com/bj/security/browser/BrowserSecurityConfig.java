@@ -1,22 +1,20 @@
 package com.bj.security.browser;
 
-import com.bj.security.browser.session.BjsExpiredSessionStrategy;
-import com.bj.security.browser.session.BjsInvalidSessionStrategy;
+import com.bj.security.core.authentication.AbstractChannelSecurityConfig;
 import com.bj.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.bj.security.core.properties.SecurityConstants;
 import com.bj.security.core.properties.SecurityProperties;
-import com.bj.security.core.validate.code.SmsCodeFilter;
-import com.bj.security.core.validate.code.ValidateCodeFilter;
+import com.bj.security.core.validate.code.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -30,10 +28,10 @@ import javax.sql.DataSource;
  * Created by neko on 2018/3/7.
  */
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
-    private SecurityProperties secutiryProperties;
+    private SecurityProperties securityProperties;
 
     @Autowired
     private AuthenticationSuccessHandler bjsAuthenticationSuccessHandler;
@@ -51,7 +49,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
     @Autowired
+    ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
+    @Autowired
     private SpringSocialConfigurer bjsSocialSecurityConfig;
+
+    @Autowired
+    private LogoutSuccessHandler BjsLogoutSuccessHandler;
 
     @Autowired
     private SessionInformationExpiredStrategy BjsSessionInformationExpiredStrategy;
@@ -78,6 +82,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+/*
         //自定义图片验证码过滤器
         ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
         validateCodeFilter.setAuthenticationFailureHandler(bjsAuthenticationFailureHandler);
@@ -125,6 +130,49 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .apply(smsCodeAuthenticationSecurityConfig) //加入配置
                 .and()
                 .apply(bjsSocialSecurityConfig);
+*/
+
+        applyPasswordAuthenticationConfig(http);
+
+        http.apply(validateCodeSecurityConfig)
+                .and()
+                .apply(smsCodeAuthenticationSecurityConfig)
+                .and()
+                .apply(bjsSocialSecurityConfig)
+                .and()
+                .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+                .userDetailsService(userDetailsService)
+                .and()
+                .sessionManagement()
+                .invalidSessionStrategy(BjsInvalidSessionStrategy)
+                .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+                .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
+                .expiredSessionStrategy(BjsSessionInformationExpiredStrategy)
+                .and()
+                .and()
+                .logout()
+                    //.logoutUrl("/logout") //配置退出URL
+                    .logoutSuccessHandler(BjsLogoutSuccessHandler) //与logoutUrl互斥，只能写一个
+                    .logoutSuccessUrl("/bj-logout.html") //退出成功后重定向地址
+                    .deleteCookies("JSESSIONID") //清除cookies
+                .and()
+                .authorizeRequests()
+                .antMatchers(
+                        SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+                        securityProperties.getBrowser().getLoginPage(),
+                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*",
+                        securityProperties.getBrowser().getSignUpUrl(),
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl(),
+                        securityProperties.getBrowser().getSignOutUrl(),
+                        "/user/regist")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .csrf().disable();
     }
 
 }

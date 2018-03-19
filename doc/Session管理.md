@@ -33,3 +33,12 @@
     .and()
     ```
 - 集群Session管理
+    - 不将session单独放在任何一个服务器中，而是放入一个独立的session容器中，
+    这样就可以保证session在任何一个服务器中都和可以获取到
+    - 引入依赖
+    ```
+    <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session</artifactId>
+    </dependency>
+    ```

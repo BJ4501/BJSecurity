@@ -1,11 +1,12 @@
 package com.bj.security.core.validate.code;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * Created by neko on 2018/3/9.
  */
-public class ValidateCode {
+public class ValidateCode implements Serializable {
 
     //随机数
     private String code;

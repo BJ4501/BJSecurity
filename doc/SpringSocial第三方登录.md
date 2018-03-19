@@ -23,3 +23,8 @@
     4. UserConnectionRepository(JdbcUserConnectionRepository)
         - DB -> UserConnection表
      
+- 退出处理
+    - 使当前session失效
+    - 清除与当前用户相关的remember-me记录
+    - 清空当前的SecurityContext
+    - 重定向到登录页
